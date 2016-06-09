@@ -1,0 +1,53 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>ground.png</file>
+        <file>pivot.png</file>
+        <file>Normal_Bird_1.png</file>
+        <file>white_bird.gif</file>
+        <file>pig.png</file>
+        <file>bluebird.png</file>
+        <file>yellowbird.png</file>
+        <file>Wood_Block.png</file>
+        <file>Rock_Block.png</file>
+        <file>Wood_Block_break1.png</file>
+        <file>Wood_Block_break2.png</file>
+        <file>Wood_Block_break3.png</file>
+        <file>Rock_Block_break1.png</file>
+        <file>Rock_Block_break2.png</file>
+        <file>Rock_Block_break3.png</file>
+        <file>back.png</file>
+        <file>aim.png</file>
+    </qresource>
+    <qresource prefix="/music">
+        <file>falling.mp3</file>
+        <file>fire.mp3</file>
+        <file>wood_colli.mp3</file>
+        <file>wood_damage.mp3</file>
+        <file>wood_destroy.mp3</file>
+        <file>rock_damage.mp3</file>
+        <file>rock_destroy.mp3</file>
+        <file>Aim.mp3</file>
+        <file>rock_colli.mp3</file>
+        <file>pig_delete.mp3</file>
+        <file>BGM.mp3</file>
+    </qresource>
+    <qresource prefix="/sound">
+        <file>bluebird_yell.mp3</file>
+        <file>pig_yell.mp3</file>
+        <file>redbird_yell.mp3</file>
+        <file>whitebird_yell.mp3</file>
+        <file>yellowbird_yell.mp3</file>
+        <file>rock_rolling.mp3</file>
+        <file>wood_rolling.mp3</file>
+        <file>bird_bounce.mp3</file>
+    </qresource>
+    <qresource prefix="/effect">
+        <file>Boom.png</file>
+        <file>smoke.png</file>
+        <file>50000.png</file>
+        <file>blue_chips.png</file>
+        <file>red_chips.png</file>
+        <file>white_chips.png</file>
+        <file>yellow_chips.png</file>
+    </qresource>
+</RCC>

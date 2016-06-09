@@ -1,0 +1,4 @@
+#ifndef 50000EFFECT_H
+#define 50000EFFECT_H
+
+#endif // 50000EFFECT_H
