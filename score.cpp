@@ -5,16 +5,17 @@
 
 extern Game * game;
 
-Score::Score(bool moveornot, float x, float y, int scorenumber)
+Score::Score(bool SumOrNot, float x, float y, int scorenumber, int displaytime)
 {
 
  //if move
- if(moveornot == true) {
+ if(SumOrNot == true) {
 
-    setTransformOriginPoint(this->boundingRect().width()/2,
-                            this->boundingRect().height()/2);
-    xp = x-40;
-    yp = y-40;
+    xp = x;
+    yp = y;
+
+    ScaleAid = 0.25;
+    ScaleStep = 0.06;
 
     if(scorenumber > hitscore && scorenumber >= 50) {
     hitscore = scorenumber;
@@ -22,12 +23,18 @@ Score::Score(bool moveornot, float x, float y, int scorenumber)
     //add to sumscore
     game->ScoreOfGame->setSumScore(hitscore);
 
+    //set font style
     setDefaultTextColor(Qt::black);
     setPlainText(QString::number(hitscore));
     QFont font;
     font.setBold(true);
     font.setPixelSize(50);
     setFont(font);
+
+
+    this->setScale(ScaleAid);
+    setTransformOriginPoint(this->boundingRect().width()/2,
+                            this->boundingRect().height()/2);
     this->setPos(xp,yp);
     game->scene->addItem(this);
 
@@ -41,12 +48,12 @@ Score::Score(bool moveornot, float x, float y, int scorenumber)
 
     timer_end_display = new QTimer(this);
     connect(timer_end_display,SIGNAL(timeout()),this,SLOT(endshowhit()));
-    timer_end_display->start(750);
+    timer_end_display->start(displaytime);
 
   }
 
   //if not move
-  if(moveornot == false)  {
+  if(SumOrNot == false)  {
 
       xp = x;
       yp = y;
@@ -68,13 +75,21 @@ Score::Score(bool moveornot, float x, float y, int scorenumber)
 void Score::setSumScore(int increscore)
 {
     SumScore += increscore;
+    if(SumScore >= 50000) { setDefaultTextColor(Qt::yellow); }
     setPlainText(QString("Score: ")+QString::number(SumScore));
 
 }
 
 void Score::move()
 {
-    this->setPos(this->x()-1,this->y()-1);
+    this->setScale(ScaleAid);
+    ScaleAid += ScaleStep;
+
+    if(ScaleAid >= 1)
+    {
+        timer_move->disconnect(this);
+    }
+
 }
 
 void Score::endshowhit()

@@ -8,12 +8,12 @@
 class ChipEffect : public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    ChipEffect(QPixmap EffectPic,float x, float y);
+    ChipEffect(QPixmap EffectPic, float x, float y, int ChipsNum, int range);
 
     //how many chips
-    int n = 18;
+    int n;
 
-    QGraphicsPixmapItem * chips[18];
+    QGraphicsPixmapItem * chips;
 
     //memeber data
     QPointF ExplodeCenter;

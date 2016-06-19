@@ -8,18 +8,25 @@
 class SmokeEffect : public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    SmokeEffect(QPixmap EffectPix, float x, float y,
+    SmokeEffect(bool IsBigSmoke,QPixmap EffectPix,int displaytime,float x, float y,
                 float Max,float ScAid,float ScStep,float OpaAid,float OpaStep);
-    QTimer * timer_display;
+
+    QTimer * timer_scale;
+    QTimer * timer_move;
+    QTimer * timer_end;
+
 
     float MaxScale;
     float ScaleAid;
     float OpacityAid;
     float ScaleStep;
     float OpacityStep;
+    bool isBig;
 
 public slots:
-    void move();
+    void endshow();
+    void scalesmoke();
+    void movesmoke();
 
 };
 

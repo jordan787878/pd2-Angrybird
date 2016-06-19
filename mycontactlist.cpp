@@ -1,3 +1,7 @@
+#define Pig_Block_Factor 0.2
+#define Pig_Bird_Factor 3
+#define Pig_Ground_Factor 6.25
+
 #include "mycontactlist.h"
 #include "gameitem.h"
 #include "enemyitem.h"
@@ -69,7 +73,7 @@ void MyContactList::BeginContact(b2Contact * contact)
    {
        if(fa_userdata->ID_NAME == QString("Ground"))
        {
-           float groundImpulse = fb->GetBody()->GetLinearVelocity().Length()*50/8;
+           float groundImpulse = fb->GetBody()->GetLinearVelocity().Length()*Pig_Ground_Factor;
            if(groundImpulse  > 0)  {
               fb_userdata->MaxImpulse = fb_userdata->MaxImpulse - groundImpulse;
               groundImpulse = 0;
@@ -112,21 +116,12 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
 
             if(ExertImpulse > 0) {
                ExertImpulse = ExertImpulse/1000000;
-
-               //explode effect
-               if(ExertImpulse > 50)
-               {
-                   //smoke effect
-                   VisualEffect(QString("SmokeEffect_small"),QPixmap(":/effect/smoke.png"),
-                                fb->GetBody()->GetPosition().x,
-                                game->size().height()-fb->GetBody()->GetPosition().y);
-               }
-
                fa_userdata->MaxImpulse = fa_userdata->MaxImpulse - ExertImpulse;
 
+               //display hit score
                Score * DisPlayHit = new Score(true,fb->GetBody()->GetPosition().x,
                                               game->size().height()-fb->GetBody()->GetPosition().y,
-                                              (int)ExertImpulse);
+                                              (int)ExertImpulse,300);
                ExertImpulse = 0;
             }
         }
@@ -138,21 +133,13 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
 
             if(ExertImpulse > 0) {
                ExertImpulse = ExertImpulse/1000000;
-
-               //explode effect
-               if(ExertImpulse > 50)
-               {
-                  //smoke effect
-                  VisualEffect(QString("SmokeEffect_small"),QPixmap(":/effect/smoke.png"),
-                                fb->GetBody()->GetPosition().x,
-                                game->size().height()-fb->GetBody()->GetPosition().y);
-               }
-
                fa_userdata->MaxImpulse = fa_userdata->MaxImpulse - ExertImpulse;
 
+
+               //display hit score
                Score * DisPlayHit = new Score(true,fb->GetBody()->GetPosition().x,
                                              game->size().height()-fb->GetBody()->GetPosition().y,
-                                             (int)ExertImpulse);
+                                             (int)ExertImpulse,300);
 
                ExertImpulse = 0;
             }
@@ -168,12 +155,10 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
     {
         if(fb_userdata->ID_NAME == QString("Bird"))
         {
-            qDebug() << "hit";
             ExertImpulse = Impulse->normalImpulses[0];
             if(ExertImpulse > 0)
             {
-               ExertImpulse = 1.5*ExertImpulse/1000000;
-               qDebug() << ExertImpulse;
+               ExertImpulse = Pig_Bird_Factor*ExertImpulse/1000000;
                fa_userdata->MaxImpulse =
                fa_userdata->MaxImpulse - ExertImpulse;
                ExertImpulse = 0;
@@ -186,12 +171,10 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
     {
         if(fa_userdata->ID_NAME == QString("Bird"))
         {
-            qDebug() << "hit";
             ExertImpulse = Impulse->normalImpulses[0];
             if(ExertImpulse > 0)
             {
-               ExertImpulse = 1.5*ExertImpulse/1000000;
-               qDebug() << ExertImpulse;
+               ExertImpulse = Pig_Bird_Factor*ExertImpulse/1000000;
                fb_userdata->MaxImpulse =
                fb_userdata->MaxImpulse - ExertImpulse;
                ExertImpulse = 0;
@@ -210,7 +193,7 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
 
             if(ExertImpulse > 0)
             {
-               ExertImpulse = ExertImpulse/4000000;
+               ExertImpulse = Pig_Block_Factor*ExertImpulse/1000000;
                fb_userdata->MaxImpulse =
                fb_userdata->MaxImpulse - ExertImpulse;
                ExertImpulse = 0;
@@ -223,7 +206,7 @@ void MyContactList::PostSolve(b2Contact *contact, const b2ContactImpulse *Impuls
 
             if(ExertImpulse > 0)
             {
-               ExertImpulse = ExertImpulse/4000000;
+               ExertImpulse = 2*Pig_Block_Factor*ExertImpulse/1000000;
                fb_userdata->MaxImpulse =
                fb_userdata->MaxImpulse - ExertImpulse;
                ExertImpulse = 0;

@@ -1,6 +1,8 @@
 #include "blackblock.h"
 #include "game.h"
 #include <QDebug>
+#include "visualeffect.h"
+
 
 extern Game * game;
 
@@ -55,7 +57,7 @@ BlackBlock::BlackBlock(b2World *g_world, QPointF position, int32 Item_Width, int
     //add userdata
     myStruct = new bodyUserData;
     myStruct->ID_NAME = QString("BlackBlock");
-    myStruct->MaxImpulse = 200;
+    myStruct->MaxImpulse = 100;
     EnemyItem_body->SetUserData(myStruct);
 
 }
@@ -91,7 +93,11 @@ void BlackBlock::move()
     bodyUserData* udStruct = (bodyUserData*)this->EnemyItem_body->GetUserData();
     if(udStruct->MaxImpulse <= 0 )
     {
-        qDebug() << "destroy";
+        //explode effect
+        VisualEffect(QString("ChipEffect_BBlock"),QPixmap(":/effect/blackblock_chip.png"),
+                     this->pos().x()+this->boundingRect().width()/2,
+                     this->pos().y()+this->boundingRect().height()/2);
+
         game->Wood_destroy_sound->play();
         timer_move->disconnect(this);
         delete timer_move;
@@ -105,7 +111,7 @@ void BlackBlock::move()
         return;
     }
 
-    if(udStruct->MaxImpulse < 150)
+    if(udStruct->MaxImpulse < 80)
     {
         if(BreakState == 0) {
         Wood_Break_Sound->play();
@@ -114,7 +120,7 @@ void BlackBlock::move()
         }
     }
 
-    if(udStruct->MaxImpulse < 90)
+    if(udStruct->MaxImpulse < 50)
     {
         if(BreakState == 1) {
         Wood_Break_Sound->play();
@@ -123,7 +129,7 @@ void BlackBlock::move()
         }
     }
 
-    if(udStruct->MaxImpulse < 50)
+    if(udStruct->MaxImpulse < 10)
     {
         if(BreakState == 2) {
         Wood_Break_Sound->play();

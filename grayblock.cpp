@@ -1,6 +1,7 @@
 #include "grayblock.h"
 #include "game.h"
 #include <QDebug>
+#include "visualeffect.h"
 
 extern Game * game;
 
@@ -91,7 +92,11 @@ void GrayBlock::move()
 
     if(udStruct->MaxImpulse <= 0 )
     {
-        qDebug() << "destroy";
+        //explode effect
+        VisualEffect(QString("ChipEffect_BBlock"),QPixmap(":/effect/blackblock_chip.png"),
+                     this->pos().x()+this->boundingRect().width()/2,
+                     this->pos().y()+this->boundingRect().height()/2);
+
         game->Rock_destroy_sound->play();
         timer_move->disconnect(this);
         delete timer_move;

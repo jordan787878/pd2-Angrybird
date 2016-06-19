@@ -7,7 +7,6 @@
 #include "blackblock.h"
 #include "grayblock.h"
 #include "pig.h"
-#include "button.h"
 #include <QTime>
 
 #include <QBrush>
@@ -23,6 +22,7 @@ Game::Game()
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 
     //set background
     setBackgroundBrush(QBrush(QPixmap(":/image/back.png")));
@@ -106,8 +106,11 @@ void Game::CreateWorld()
     Bird_Red_Yell->setMedia(QUrl("qrc:/sound/redbird_yell.mp3"));
 
 
-    //test
+    //connect timer_next
     timer_next = new QTimer(this);
+
+    //connect quitGame()
+    connect(this,SIGNAL(quitGame()),this,SLOT(QUITSLOT()));
 
 }
 
@@ -139,21 +142,15 @@ void Game::displayMenu()
 
 void Game::start()
 {
-   //delete Last Time Score
-   if(ScoreOfGame)
-   {
-       delete ScoreOfGame;
-   }
-
    scene->clear();
    scene->setSceneRect(0,0,2400,700);
-
 
 
    BGM->play();
    connect(BGM,SIGNAL(stateChanged(QMediaPlayer::State)),this,SLOT(replayBGM()));
 
    BirdNumber = 0;
+   GameOverScore = 0;
 
    ShowWorld();
    CreateBirdItem();
@@ -204,18 +201,16 @@ void Game::CreateBirdItem()
     //game clear
     if(BirdNumber > 0 && PigList.size() == 0)
     {
-        qDebug() << "game clear";
         GameOverClean();
-        GameOver();
+        GameOver("CLEAR~~~");
         return;
     }
 
     //game over
-    if(BirdNumber > 15-1 && PigList.size() != 0)
+    if(BirdNumber > 7-1 && PigList.size() != 0)
     {
-        qDebug() << "gameover";
         GameOverClean();
-        GameOver();
+        GameOver("GameOver");
         return;
     }
 
@@ -232,10 +227,8 @@ void Game::CreateEnemyItem()
    BlackBlock * block1 = new BlackBlock(world,QPointF(675+600,350),50,150,90);
    Enemyitemlist.append(block1);
 
-
    GrayBlock * block2 = new GrayBlock(world,QPointF(550+600,500),150,50,90);
    Enemyitemlist.append(block2);
-
 
    GrayBlock * block4 = new GrayBlock(world,QPointF(700+600,500),150,50,90);
    Enemyitemlist.append(block4);
@@ -243,21 +236,29 @@ void Game::CreateEnemyItem()
    GrayBlock * block5 = new GrayBlock(world,QPointF(625+600,200),150,50,0);
    Enemyitemlist.append(block5);
 
-
    BlackBlock * block7 = new BlackBlock(world,QPointF(615+600,250),50,150,0);
    Enemyitemlist.append(block7);
 
    BlackBlock * block8 = new BlackBlock(world,QPointF(735+600,250),50,150,0);
    Enemyitemlist.append(block8);
 
+
    Pig * pig1 = new Pig(world,QPointF(675+600,300),50,50);
    PigList.append(pig1);
+
+   Pig * pig4 = new Pig(world,QPointF(675+600,500),50,50);
+   PigList.append(pig4);
+
+   Pig * pig6 = new Pig(world,QPointF(675+600,100),50,50);
+   PigList.append(pig6);
+
+   Pig * pig3 = new Pig(world,QPointF(1500,500),50,50);
+   PigList.append(pig3);
 
 
 
    GrayBlock * block9 = new GrayBlock(world,QPointF(1950,350),150,50,0);
    Enemyitemlist.append(block9);
-
 
    BlackBlock * block10 = new BlackBlock(world,QPointF(2000,500),50,150,0);
    Enemyitemlist.append(block10);
@@ -265,6 +266,8 @@ void Game::CreateEnemyItem()
    Pig * pig2 = new Pig(world,QPointF(2000,300),50,50);
    PigList.append(pig2);
 
+   Pig * pig5 = new Pig(world,QPointF(1100,550),50,50);
+   PigList.append(pig5);
 
 }
 
@@ -325,6 +328,11 @@ bool Game::NextTurn()
 void Game::CreateBirdLater()
 {
     CreateBirdItem();
+}
+
+void Game::QUITSLOT()
+{
+    std::cout << "Quit Game Signal receive !" << std::endl ;
 }
 
 void Game::mouseMoveEvent(QMouseEvent *event)
@@ -394,6 +402,9 @@ void Game::drawPanel(int x, int y, int width, int height, QColor color, double o
 
 void Game::GameOverClean()
 {
+    //set score to display
+    GameOverScore = ScoreOfGame->SumScore;
+
     //stop BGM
     BGM->disconnect(this);
     BGM->stop();
@@ -430,11 +441,14 @@ void Game::GameOverClean()
     delete grounditem;
     delete pivot;
     delete SlingShot;
+    delete ScoreOfGame;
 
 }
 
-void Game::GameOver()
+void Game::GameOver(QString overstate)
 {
+    emit quitGame();
+
     this->centerOn(600,350);
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -443,21 +457,32 @@ void Game::GameOver()
     //drawPanel(0,0,1200,700,Qt::black,0.8);
     //drawPanel(320,120,570,360,Qt::white,0.25);
 
+    QGraphicsTextItem * state_Over = new QGraphicsTextItem();
+    QFont statefont("comic sans",50);
+    state_Over->setPlainText(overstate);
+    state_Over->setFont(statefont);
+    if(overstate == "CLEAR~~~") { state_Over->setDefaultTextColor(Qt::yellow); }
+    state_Over->setPos(450,120);
+    scene->addItem(state_Over);
 
-    //show score
-    ScoreOfGame->setPos(510,150);
+    QGraphicsTextItem * score_Over = new QGraphicsTextItem();
+    QFont scorefont("comic sans",50);
+    score_Over->setPlainText(QString("Score:")+QString::number(GameOverScore));
+    score_Over->setFont(scorefont);
+    score_Over->setDefaultTextColor(Qt::yellow);
+    int xp = 1200/2 - score_Over->boundingRect().width()/2;
+    score_Over->setPos(xp,200);
+    scene->addItem(score_Over);
 
-    Button * playagainbtn = new Button("Play Again");
-    playagainbtn->setPos(510,275);
-    connect(playagainbtn,SIGNAL(clicked()),this,SLOT(restart()));
-    scene->addItem(playagainbtn);
+    Button * playagainbtn_Over = new Button("Play Again");
+    playagainbtn_Over->setPos(510,300);
+    connect(playagainbtn_Over,SIGNAL(clicked()),this,SLOT(restart()));
+    scene->addItem(playagainbtn_Over);
 
-    Button * quitbtn = new Button("Exit");
-    quitbtn->setPos(510,350);
-    connect(quitbtn,SIGNAL(clicked()),this,SLOT(over()));
-    scene->addItem(quitbtn);
-
-
+    Button * quitbtn_Over = new Button("Exit");
+    quitbtn_Over->setPos(510,375);
+    connect(quitbtn_Over,SIGNAL(clicked()),this,SLOT(over()));
+    scene->addItem(quitbtn_Over);
 
 }
 
@@ -475,7 +500,7 @@ void Game::destroyPig(b2Body *BodyToDestroy)
     ReMoveAid = 1;
     TempBody = BodyToDestroy;
     QTimer::singleShot(0,this,SLOT(ReMove()));
-    qDebug() << "pre remove";
+
 }
 
 
@@ -494,15 +519,17 @@ void Game::ReMove()
     if(ReMoveAid == 0)
     {
         pig_yell_sound->play();
-        qDebug() << "remove";
 
         //smoke effect
         VisualEffect(QString("SmokeEffect_big"),QPixmap(":/effect/smoke.png"),
                      TempBody->GetPosition().x,this->size().height()-TempBody->GetPosition().y);
 
-        //5000 effect  still need to recode
+        //50000 effect  still need to recode
         VisualEffect(QString("50000effect"),QPixmap(":/effect/50000.png"),
                      TempBody->GetPosition().x,this->size().height()-TempBody->GetPosition().y);
+
+        //add score 50000
+        ScoreOfGame->setSumScore(500000);
 
 
 

@@ -1,7 +1,7 @@
 #include "addbird.h"
 #include <cstdlib>
 #include "game.h"
-#define NUM_Bird 4     //#define NUM_Bird 4
+#define NUM_Bird 4    //#define NUM_Bird 4
 
 #define Red_Bird 0
 #define White_Bird 1

@@ -10,6 +10,7 @@
 #include <QList>
 #include <QMouseEvent>
 #include <QMediaPlayer>
+#include <iostream>
 
 #include "gameitem.h"
 #include "enemyitem.h"
@@ -18,6 +19,7 @@
 #include "userdata.h"
 #include "score.h"
 #include "visualeffect.h"
+#include "button.h"
 
 
 class Game : public QGraphicsView{
@@ -40,7 +42,7 @@ public:
 
     void drawPanel(int x, int y, int width, int height, QColor color, double opacity);
     void GameOverClean();
-    void GameOver();
+    void GameOver(QString overstate);
 
 
     void movebird(GameItem * ItemToMove);
@@ -96,9 +98,13 @@ public:
 
     int ReMoveAid;
     bool isPicked = false;
-
     QTimer * timer_next;
     int BirdNumber;
+    int GameOverScore;
+
+
+signals:
+    void quitGame();
 
 
 public slots:
@@ -112,6 +118,9 @@ public slots:
 
     bool NextTurn();
     void CreateBirdLater();
+
+    //for gameover link
+    void QUITSLOT();
 
 };
 

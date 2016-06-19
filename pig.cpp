@@ -55,7 +55,7 @@ Pig::Pig(b2World *g_world, QPointF position, int32 Item_Width, int32 Item_Height
 
 
     //add userdata
-    bodyUserData* myStruct = new bodyUserData;
+    myStruct = new bodyUserData;
     myStruct->ID_NAME = QString("Pig");
     myStruct->MaxImpulse = 500;
     EnemyItem_body->SetUserData(myStruct);
@@ -76,6 +76,8 @@ void Pig::move()
     {
         timer_move->disconnect(this);
         delete timer_move;
+        delete myStruct;
+
         //test
         EnemyItem_body->SetLinearVelocity(b2Vec2_zero);
 

@@ -34,7 +34,7 @@ RedBird::RedBird(b2World * g_world)
    fixtureDef.restitution = RedBird_Elastic;
 
    body->CreateFixture(&fixtureDef);
-   body->SetAngularDamping(1.0);
+   body->SetAngularDamping(0.8);
 
    //Initially set to no active
    body->SetActive(false);
@@ -60,7 +60,7 @@ void RedBird::shoot()
 
     b2Vec2 FireVelocity(( game->pivotptr.x()-game->originalptr.x() ),
                         ( game->originalptr.y()-game->pivotptr.y() ) );
-    FireVelocity *= 5;
+    FireVelocity *= 1.5;
     body->SetLinearVelocity(FireVelocity);
 
 

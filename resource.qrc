@@ -49,5 +49,6 @@
         <file>red_chips.png</file>
         <file>white_chips.png</file>
         <file>yellow_chips.png</file>
+        <file>blackblock_chip.png</file>
     </qresource>
 </RCC>

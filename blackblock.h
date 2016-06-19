@@ -1,6 +1,6 @@
 #ifndef BLACKBLOCK_H
 #define BLACKBLOCK_H
-#define BlackBlock_Density 400.0f
+#define BlackBlock_Density 375.0f
 
 #include "enemyitem.h"
 

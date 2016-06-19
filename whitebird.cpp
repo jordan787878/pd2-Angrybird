@@ -56,7 +56,7 @@ void WhiteBird::shoot()
 
     b2Vec2 FireVelocity(( game->pivotptr.x()-game->originalptr.x() ),
                         ( game->originalptr.y()-game->pivotptr.y() ) );
-    FireVelocity *= 1;
+    FireVelocity *= 1.5;
     body->SetLinearVelocity(FireVelocity);
 
 
@@ -124,8 +124,6 @@ void WhiteBird::Destroy()
                  this->pos().x(),this->pos().y());
 
     delete this;
-
-
 
 }
 
